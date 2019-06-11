@@ -7,8 +7,6 @@
 
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/global.css" />
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="/script.js" defer></script>
   </head>
 
   <body>
@@ -17,30 +15,10 @@
         <header class="sr-header">
           <div class="sr-header__logo"></div>
         </header>
-        <div class="sr-payment-summary payment-view">
-          <h1 class="order-amount">$14.00</h1>
-          <h4>per month subscription</h4>
-        </div>        
-        <div class="sr-payment-form payment-view">
-          <label class="sr-checkbox-label"><input type="checkbox" name="subscribe" value="false"><span class="sr-checkbox-check"></span> Add limited edition Pasha e-book (+$3.00)</label>
-          <button id="submit">Checkout</button>
-          <div class="sr-legal-text">
-            Your card will be immediately charged <span class="order-total">$14.00</span> and then billed $14.00 each month.
-          </div>
+        <div class="sr-payment-summary completed-view">
+          <h1>Your test payment was canceled.</h1>
         </div>
-        <div class="sr-payment-summary hidden completed-view">
-          <h1>Your test payment <span class="order-status"></span></h1>
-          <h4>
-            View PaymentIntent response:</a>
-          </h4>
-        </div>
-        <div class="sr-section hidden completed-view">
-          <div class="sr-callout">
-            <pre>
-  
-            </pre>
-          </div>
-        </div>  
+        <button onclick="window.location.href = '/';">Restart demo</button>
       </div>
       <div class="sr-content">
         <div class="pasha-image-stack">
