@@ -4,7 +4,9 @@
 
 This sample uses Checkout to start a monthly subscription for a new customer, with the option to add a one-off charge to the order.
 
-<img src="./checkout-example.gif" alt="Example of Stripe Checkout" align="center">
+[View](https://508st.sse.codesandbox.io/) or [fork](https://codesandbox.io/s/checkout-subscription-with-add-on-508st) the demo on CodeSandbox.
+
+[<img src="./checkout-example.gif" alt="Example of Stripe Checkout" align="center">](https://508st.sse.codesandbox.io/)
 
 This sample shows you how to:
 * Start a subscription using the Checkout Session API 🌀

@@ -4,10 +4,11 @@ use Slim\Http\Response;
 use Stripe\Stripe;
 
 require 'vendor/autoload.php';
-require './config.php';
 
 $dotenv = Dotenv\Dotenv::create(realpath('../..'));
 $dotenv->load();
+
+require './config.php';
 
 $app = new \Slim\App;
 
@@ -29,7 +30,7 @@ $app->add(function ($request, $response, $next) {
 
 $app->get('/', function (Request $request, Response $response, array $args) {   
   // Display checkout page
-  return $response->write(file_get_contents('../../client/index.html'));
+  return $response->write(file_get_contents(getenv('STATIC_DIR') . '/index.html'));
 });
 
 $app->get('/public-key', function (Request $request, Response $response, array $args) {

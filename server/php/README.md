@@ -16,7 +16,7 @@ composer install
 2. Run the application
 
 ```
-composer start
+php -S localhost:4242 index.php
 ```
 
 3. Go to `localhost:4242` in your browser to see the demo
