@@ -5,7 +5,8 @@ use Stripe\Stripe;
 
 require 'vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::create(realpath('../..'));
+$ENV_PATH = '../..';
+$dotenv = Dotenv\Dotenv::create(realpath($ENV_PATH));
 $dotenv->load();
 
 require './config.php';
@@ -39,12 +40,9 @@ $app->get('/public-key', function (Request $request, Response $response, array $
 });
 
 $app->post('/create-checkout-session', function(Request $request, Response $response, array $args) {
-  $logger = $this->get('logger');
-
   $domain_url = getenv('DOMAIN');
-  $plan_id = getEnv('SUBSCRIPTION_PLAN_ID');
+  $plan_id = getenv('SUBSCRIPTION_PLAN_ID');
   $body = json_decode($request->getBody());
-  $logger->info('🔔  ' . $body->isBuyingSticker);
 
   if($body->isBuyingSticker) {
     // Customer is signing up for a subscription and purchasing the extra e-book
