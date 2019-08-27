@@ -1,4 +1,4 @@
-# Name of sample
+# Checkout subscription with add-ons
 
 ## Requirements
 * Maven
