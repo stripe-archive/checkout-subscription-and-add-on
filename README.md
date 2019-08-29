@@ -4,7 +4,15 @@
 
 This sample uses Checkout to start a monthly subscription for a new customer, with the option to add a one-off charge to the order.
 
-[View](https://508st.sse.codesandbox.io/) or [fork](https://codesandbox.io/s/checkout-subscription-with-add-on-508st) the demo on CodeSandbox.
+**Demo**
+
+[View](https://508st.sse.codesandbox.io/) a hosted version of the sample or [fork](https://codesandbox.io/s/checkout-subscription-with-add-on-508st) the sample on CodeSandbox.
+
+The hosted demo is running in test mode -- use `4242424242424242` as a test card number with any CVC + future expiration date.
+
+Use the `4000000000003220` test card number to trigger a 3D Secure challenge flow.
+
+Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
 [<img src="./checkout-example.gif" alt="Example of Stripe Checkout" align="center">](https://508st.sse.codesandbox.io/)
 
