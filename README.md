@@ -22,17 +22,69 @@ This sample shows you how to:
 * Use a webhook to fulfill the order ️️✨
 
 ## How to run locally
-You will need a Stripe account with its own set of [API keys](https://stripe.com/docs/development#api-keys) and an existing [Plan](https://stripe.com/docs/billing/subscriptions/creating#plans) created either in your Stripe Dashboard or through the [API](https://stripe.com/docs/api/plans/create).
 
-This recipe includes [5 server implementations](server/README.md) in our most popular languages. 
+This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP.
 
-If you want to run the recipe locally, copy the .env.example file to your own .env file in this directory: 
+Follow the steps below to run locally.
+
+**1. Clone the repository:**
+
+```
+git clone https://github.com/stripe-samples/checkout-subscription-and-add-on
+```
+
+**2. Create Products and Plans on Stripe** 
+
+This sample requires a [Plan](https://stripe.com/docs/api/plans/object) ID to create the Checkout page. Products and Plans are objects on Stripe that lets you model a subscription. 
+
+You can create Products and Plans [in the dashboard](https://dashboard.stripe.com/products) or via [the API](https://stripe.com/docs/api/plans/create). Create a Plan before running this sample. 
+
+**3. Copy the .env.example to a .env file:**
 
 ```
 cp .env.example .env
 ```
 
-You will need to update the values in .env to include your API keys, the ID of the Plan, and your website's domain so Checkout can redirect the customer back.
+You will need a Stripe account in order to run the demo. Once you set up your account, go to the Stripe [developer dashboard](https://stripe.com/docs/development#api-keys) to find your API keys.
+
+```
+STRIPE_PUBLIC_KEY=<replace-with-your-publishable-key>
+STRIPE_SECRET_KEY=<replace-with-your-secret-key>
+```
+
+`STATIC_DIR` tells the server where to the client files are located and does not need to be modified unless you move the server files.
+
+`SUBSCRIPTION_PLAN_ID` requires a Plan ID for a subscription.
+
+`DOMAIN` is the domain of your website, where Checkout will redirect back to after the customer completes the payment on the Checkout page. 
+
+**4. Follow the server instructions on how to run:**
+
+Pick the server language you want and follow the instructions in the server folder README on how to run.
+
+For example, if you want to run the Node server:
+
+```
+cd server/node # there's a README in this folder with instructions
+npm install
+npm start
+```
+
+**5. [Optional] Run a webhook locally:**
+
+You can use the Stripe CLI to easily spin up a local webhook.
+
+First [install the CLI](https://stripe.com/docs/stripe-cli) and [link your Stripe account](https://stripe.com/docs/stripe-cli#link-account).
+
+```
+stripe listen --forward-to localhost:4242/webhook
+```
+
+The CLI will print a webhook secret key to the console. Set `STRIPE_WEBHOOK_SECRET` to this value in your .env file.
+
+You should see events logged in the console where the CLI is running.
+
+When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings). 
 
 
 ## FAQ
