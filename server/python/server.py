@@ -29,8 +29,8 @@ def get_example():
 
 
 @app.route('/public-key', methods=['GET'])
-def get_public_key():
-    return jsonify({'publicKey': os.getenv('STRIPE_PUBLIC_KEY')})
+def get_publishable_key():
+    return jsonify({'publicKey': os.getenv('STRIPE_PUBLISHABLE_KEY')})
 
 
 @app.route('/create-checkout-session', methods=['POST'])
