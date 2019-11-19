@@ -8,7 +8,7 @@ $plan_id = $config['subscription_plan_id'];
 if($body->isBuyingSticker) {
   // Customer is signing up for a subscription and purchasing the extra e-book
   $checkout_session = \Stripe\Checkout\Session::create([
-	'success_url' => $domain_url . '/success.html',
+    'success_url' => $domain_url . '/success.html?session_id={CHECKOUT_SESSION_ID}',
 	'cancel_url' => $domain_url . '/cancel.html',
 	'payment_method_types' => ['card'],
 	'subscription_data' => [
@@ -26,7 +26,7 @@ if($body->isBuyingSticker) {
 } else {
   // Customer is only signing up for a subscription
   $checkout_session = \Stripe\Checkout\Session::create([
-	'success_url' => $domain_url . '/success.html',
+    'success_url' => $domain_url . '/success.html?session_id={CHECKOUT_SESSION_ID}',
 	'cancel_url' => $domain_url . '/cancel.html',
 	'payment_method_types' => ['card'],
 	'subscription_data' => [

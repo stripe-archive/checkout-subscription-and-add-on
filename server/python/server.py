@@ -18,7 +18,8 @@ load_dotenv(find_dotenv())
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 stripe.api_version = os.getenv('STRIPE_API_VERSION')
 
-static_dir = str(os.path.abspath(os.path.join(__file__ , "..", os.getenv("STATIC_DIR"))))
+static_dir = str(os.path.abspath(os.path.join(
+    __file__, "..", os.getenv("STATIC_DIR"))))
 app = Flask(__name__, static_folder=static_dir,
             static_url_path="", template_folder=static_dir)
 
@@ -32,6 +33,13 @@ def get_example():
 def get_publishable_key():
     return jsonify({'publicKey': os.getenv('STRIPE_PUBLISHABLE_KEY')})
 
+# Fetch the Checkout Session to display the JSON result on the success page
+@app.route('/checkout-session', methods=['GET'])
+def get_checkout_session():
+    id = request.args.get('sessionId')
+    checkout_session = stripe.checkout.Session.retrieve(id)
+    return jsonify(checkout_session)
+
 
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
@@ -43,7 +51,8 @@ def create_checkout_session():
         if data['isBuyingSticker']:
             # Customer is signing up for a subscription and purchasing the extra e-book
             checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url + "/success.html",
+                success_url=domain_url +
+                "/success.html?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url=domain_url + "/cancel.html",
                 payment_method_types=["card"],
                 subscription_data={"items": [{"plan": plan_id}]},
@@ -59,7 +68,8 @@ def create_checkout_session():
         else:
             # Customer is only signing up for a subscription
             checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url + "/success.html",
+                success_url=domain_url +
+                "/success.html?session_id={CHECKOUT_SESSION_ID}",
                 cancel_url=domain_url + "/cancel.html",
                 payment_method_types=["card"],
                 subscription_data={"items": [{"plan": plan_id}]},

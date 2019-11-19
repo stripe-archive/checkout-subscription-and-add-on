@@ -26,7 +26,6 @@ $app->add(function ($request, $response, $next) {
     Stripe::setApiKey(getenv('STRIPE_SECRET_KEY'));
     return $next($request, $response);
 });
-  
 
 $app->get('/', function (Request $request, Response $response, array $args) {   
   // Display checkout page
@@ -38,6 +37,13 @@ $app->get('/public-key', function (Request $request, Response $response, array $
     return $response->withJson([ 'publicKey' => $pub_key ]);
 });
 
+$app->get('/checkout-session', function (Request $request, Response $response, array $args) {
+  $id = $request->getQueryParams()['sessionId'];
+  $checkout_session = \Stripe\Checkout\Session::retrieve($id);
+
+  return $response->withJson($checkout_session);
+});
+
 $app->post('/create-checkout-session', function(Request $request, Response $response, array $args) {
   $domain_url = getenv('DOMAIN');
   $plan_id = getenv('SUBSCRIPTION_PLAN_ID');
@@ -46,7 +52,7 @@ $app->post('/create-checkout-session', function(Request $request, Response $resp
   if($body->isBuyingSticker) {
     // Customer is signing up for a subscription and purchasing the extra e-book
     $checkout_session = \Stripe\Checkout\Session::create([
-      'success_url' => $domain_url . '/success.html',
+      'success_url' => $domain_url . '/success.html?session_id={CHECKOUT_SESSION_ID}',
       'cancel_url' => $domain_url . '/cancel.html',
       'payment_method_types' => ['card'],
       'subscription_data' => [
@@ -64,7 +70,7 @@ $app->post('/create-checkout-session', function(Request $request, Response $resp
   } else {
     // Customer is only signing up for a subscription
     $checkout_session = \Stripe\Checkout\Session::create([
-      'success_url' => $domain_url . '/success.html',
+      'success_url' => $domain_url . '/success.html?session_id={CHECKOUT_SESSION_ID}',
       'cancel_url' => $domain_url . '/cancel.html',
       'payment_method_types' => ['card'],
       'subscription_data' => [

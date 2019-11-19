@@ -42,7 +42,7 @@ public class Server {
 
     public static void main(String[] args) {
         port(4242);
-        
+
         Dotenv dotenv = Dotenv.load();
 
         Stripe.apiKey = dotenv.get("STRIPE_SECRET_KEY");
@@ -58,6 +58,16 @@ public class Server {
             return gson.toJson(responseData);
         });
 
+        // Fetch the Checkout Session to display the JSON result on the success page
+        get("/checkout-session", (request, response) -> {
+            response.type("application/json");
+
+            String sessionId = request.queryParams("sessionId");
+            Session session = Session.retrieve(sessionId);
+
+            return gson.toJson(session);
+        });
+
         post("/create-checkout-session", (request, response) -> {
             response.type("application/json");
             PostBody postBody = gson.fromJson(request.body(), PostBody.class);
@@ -70,7 +80,7 @@ public class Server {
             SubscriptionData.Item plan = new SubscriptionData.Item.Builder().setPlan(planId).build();
             SubscriptionData subscriptionData = new SubscriptionData.Builder().addItem(plan).build();
 
-            builder.setSuccessUrl(domainUrl + "/success.html").setCancelUrl(domainUrl + "/cancel.html")
+            builder.setSuccessUrl(domainUrl + "/success.html?session_id={CHECKOUT_SESSION_ID}").setCancelUrl(domainUrl + "/cancel.html")
                     .setSubscriptionData(subscriptionData).addPaymentMethodType(PaymentMethodType.CARD);
 
             if (postBody.getIsBuyingSticker()) {

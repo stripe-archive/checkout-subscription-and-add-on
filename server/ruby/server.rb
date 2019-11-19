@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stripe'
 require 'sinatra'
 require 'dotenv'
@@ -26,7 +28,7 @@ def create_checkout_session(is_buying_sticker, plan_id, domain_url)
   checkout_session = if is_buying_sticker
                        # Customer is signing up for a subscription and purchasing the extra e-book
                        Stripe::Checkout::Session.create(
-                         success_url: domain_url + '/success.html',
+                         success_url: ENV['DOMAIN'] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
                          cancel_url: domain_url + '/cancel.html',
                          payment_method_types: ['card'],
                          subscription_data: {
@@ -42,7 +44,7 @@ def create_checkout_session(is_buying_sticker, plan_id, domain_url)
                      else
                        # Customer is only signing up for a subscription
                        Stripe::Checkout::Session.create(
-                         success_url: domain_url + '/success.html',
+                         success_url: ENV['DOMAIN'] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
                          cancel_url: domain_url + '/cancel.html',
                          payment_method_types: ['card'],
                          subscription_data: {
@@ -61,6 +63,15 @@ post '/create-checkout-session' do
   {
     checkoutSessionId: checkout_session['id']
   }.to_json
+end
+
+# Fetch the Checkout Session to display the JSON result on the success page
+get '/checkout-session' do
+  content_type 'application/json'
+  session_id = params[:sessionId]
+
+  session = Stripe::Checkout::Session.retrieve(session_id)
+  session.to_json
 end
 
 post '/webhook' do

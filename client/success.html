@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/global.css" />
-    <script src="/session_ended.js" defer></script>
   </head>
 
   <body>
@@ -19,10 +18,10 @@
         <div class="sr-payment-summary completed-view">
           <h1>Your test payment succeeded!</h1>
           <h4>
-            View PaymentIntent response:</a>
+            View CheckoutSession response:</a>
           </h4>
         </div>
-        <div class="sr-section hidden completed-view">
+        <div class="sr-section completed-view">
           <div class="sr-callout">
             <pre>
   
@@ -56,5 +55,19 @@
         </div>
       </div>
     </div>
+    <script>
+      var urlParams = new URLSearchParams(window.location.search);
+      var sessionId = urlParams.get("session_id")
+      if (sessionId) {
+        fetch("/checkout-session?sessionId=" + sessionId).then(function(result){
+          return result.json()
+        }).then(function(session){
+          var sessionJSON = JSON.stringify(session, null, 2);
+          document.querySelector("pre").textContent = sessionJSON;
+        }).catch(function(err){
+          console.log('Error when fetching Checkout session', err);
+        });
+      }
+    </script>
   </body>
 </html>

@@ -23,6 +23,13 @@ app.get("/", (req, res) => {
   res.sendFile(path);
 });
 
+// Fetch the Checkout Session to display the JSON result on the success page
+app.get("/checkout-session", async (req, res) => {
+  const { sessionId } = req.query;
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  res.send(session);
+});
+
 app.post("/create-checkout-session", async (req, res) => {
   const planId = process.env.SUBSCRIPTION_PLAN_ID;
   const domainURL = process.env.DOMAIN;
@@ -48,7 +55,7 @@ app.post("/create-checkout-session", async (req, res) => {
           }
         ]
       },
-      success_url: `${domainURL}/success.html`,
+      success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${domainURL}/cancel.html`
     });
   } else {
@@ -62,7 +69,7 @@ app.post("/create-checkout-session", async (req, res) => {
           }
         ]
       },
-      success_url: `${domainURL}/success.html`,
+      success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${domainURL}/cancel.html`
     });
   }
@@ -118,9 +125,7 @@ app.post("/webhook", async (req, res) => {
       items[0].custom.name === "Pasha e-book"
     ) {
       console.log(
-        `🔔  Customer is subscribed and bought an e-book! Send the e-book to ${
-          customer.email
-        }.`
+        `🔔  Customer is subscribed and bought an e-book! Send the e-book to ${customer.email}.`
       );
     } else {
       console.log(`🔔  Customer is subscribed but did not buy an e-book.`);
