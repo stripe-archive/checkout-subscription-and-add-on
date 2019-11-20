@@ -1,8 +1,18 @@
-# Using Checkout to create a subscription
+# Starting a subscription with Checkout
 
-[Checkout](https://stripe.com/docs/payments/checkout) lets you create a pre-built payment page hosted on Stripe that handles internationalization, displaying error messages, and rendering a responsive design.
+There are several ways you can collect card details and use them to start a subscription on Stripe.
 
-This sample uses Checkout to start a monthly subscription for a new customer, with the option to add a one-off charge to the order.
+This sample uses Checkout, Stripe's prebuilt payment page to collect card details from a customer which then automatically subscribes them to a subscription plan using the [Billing APIs](https://stripe.com/docs/billing).
+
+Checkout offers a subset of Billing functionality. If you require more control over the UI or subscription model you should check out the sample on [setting up subscription with Elements](https://github.com/stripe-samples/set-up-subscriptions). A comparison table of the two integrations:
+
+<!-- prettier-ignore -->
+|     | Checkout (this sample) | Elements ([set-up-subscriptions](https://github.com/stripe-samples/set-up-subscriptions))
+:--- | :--- | :---
+✨ **UI Interface**  | Prebuilt hosted payment page with options to customize limited pieces like the business logo and submit button text | Prebuilt, extremely customizable HTML input elements that securely collect card number, CVC, and exp date and are extremely customizable |
+📱 **Apple / Google Pay support**  | Built in, no extra code needed  | Requires extra code |
+⤵️ **Coupon support**  | Does not support coupons | Supports coupons |
+
 
 **Demo**
 
@@ -14,12 +24,7 @@ Use the `4000000000003220` test card number to trigger a 3D Secure challenge flo
 
 Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
-[<img src="./checkout-example.gif" alt="Example of Stripe Checkout" align="center">](https://508st.sse.codesandbox.io/)
-
-This sample shows you how to:
-* Start a subscription using the Checkout Session API 🌀
-* Optionally add a one-off line item to the payment 💵
-* Use a webhook to fulfill the order ️️✨
+[<img src="./checkout-example.gif" alt="Example of Stripe Checkout">](https://508st.sse.codesandbox.io/)
 
 ## How to run locally
 
