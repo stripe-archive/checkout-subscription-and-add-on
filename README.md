@@ -9,9 +9,9 @@ Checkout offers a subset of Billing functionality. If you require more control o
 <!-- prettier-ignore -->
 |     | Checkout (this sample) | Elements ([set-up-subscriptions](https://github.com/stripe-samples/set-up-subscriptions))
 :--- | :--- | :---
-✨ **UI Interface**  | Prebuilt hosted payment page with options to customize limited pieces like the business logo and submit button text | Prebuilt, extremely customizable HTML input elements that securely collect card number, CVC, and exp date and are extremely customizable |
+✨ **UI Interface to collect card details**  | Prebuilt hosted payment page with options to customize limited pieces like the business logo and submit button text | Prebuilt, extremely customizable HTML input elements that securely collect card number, CVC, and exp date and are extremely customizable |
 📱 **Apple Pay & Google Pay support**  | Built in, no extra code needed  | Requires extra code |
-⤵️ **Coupon support**  | Does not support coupons | Supports coupons |
+⤵️ **Coupon support for subscriptions**  | Does not support coupons | Supports coupons |
 
 
 **Demo**
