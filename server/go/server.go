@@ -24,7 +24,7 @@ func main() {
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 
 	http.Handle("/", http.FileServer(http.Dir(os.Getenv("STATIC_DIR"))))
-	http.HandleFunc("/checkout-session", handleGetCheckoutSession)
+	http.HandleFunc("/checkout-session", handleCheckoutSession)
 	http.HandleFunc("/create-checkout-session", handleCreateCheckoutSession)
 	http.HandleFunc("/public-key", handlePublicKey)
 	http.HandleFunc("/webhook", handleWebhook)
@@ -98,25 +98,32 @@ func handlePublicKey(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func handleGetCheckoutSession(w http.ResponseWriter, r *http.Request) {
+func handleCheckoutSession(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
 
-	keys, ok := r.URL.Query()["sessionId"]
+	id := r.FormValue("sessionId")
 
-    if !ok || len(keys[0]) < 1 {
-        log.Println("CheckoutSession ID is missing from URL", r.URL.Query())
-        return
-    }
+	if id == "" {
+		log.Println("CheckoutSession ID is missing from URL", r.URL.Query())
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
 	// Fetch the CheckoutSession object from your success page
 	// to get details about the order
-	session, _ := session.Get(
-		keys[0],
+	session, err := session.Get(
+		id,
 		nil,
 	)
+
+	if err != nil {
+		log.Println("An error happened when getting the CheckoutSession from Stripe", id)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
 	writeJSON(w, struct {
 		CheckoutSession *stripe.CheckoutSession `json:"checkoutSession"`
