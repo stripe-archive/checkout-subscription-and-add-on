@@ -28,13 +28,13 @@ Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
 ## How to run locally
 
-This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP.
+This sample includes 6 server implementations in Node, Ruby, Python, Java, PHP, and Go.
 
 Follow the steps below to run locally.
 
 **1. Clone and configure the sample**
 
-The Stripe CLI is the fastest way to clone and configure a sample to run locally. 
+The Stripe CLI is the fastest way to clone and configure a sample to run locally.
 
 **Using the Stripe CLI**
 
@@ -46,7 +46,7 @@ In your terminal shell, run the Stripe CLI command to clone the sample:
 stripe samples create checkout-subscription-and-add-on
 ```
 
-The CLI will walk you through picking your integration type, server and client languages, and configuring your .env config file with your Stripe API keys. 
+The CLI will walk you through picking your integration type, server and client languages, and configuring your .env config file with your Stripe API keys.
 
 **Installing and cloning manually**
 
@@ -75,13 +75,13 @@ The other environment variables are configurable:
 
 `SUBSCRIPTION_PLAN_ID` requires a Plan ID for a subscription.
 
-`DOMAIN` is the domain of your website, where Checkout will redirect back to after the customer completes the payment on the Checkout page. 
+`DOMAIN` is the domain of your website, where Checkout will redirect back to after the customer completes the payment on the Checkout page.
 
-**2. Create Products and Plans on Stripe** 
+**2. Create Products and Plans on Stripe**
 
-This sample requires a [Plan](https://stripe.com/docs/api/plans/object) ID to create the Checkout page. Products and Plans are objects on Stripe that lets you model a subscription. 
+This sample requires a [Plan](https://stripe.com/docs/api/plans/object) ID to create the Checkout page. Products and Plans are objects on Stripe that lets you model a subscription.
 
-You can create Products and Plans [in the dashboard](https://dashboard.stripe.com/products) or via [the API](https://stripe.com/docs/api/plans/create). Create a Plan before running this sample. 
+You can create Products and Plans [in the dashboard](https://dashboard.stripe.com/products) or via [the API](https://stripe.com/docs/api/plans/create). Create a Plan before running this sample.
 
 
 **3. Follow the server instructions on how to run:**
@@ -110,7 +110,7 @@ The CLI will print a webhook secret key to the console. Set `STRIPE_WEBHOOK_SECR
 
 You should see events logged in the console where the CLI is running.
 
-When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings). 
+When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings).
 
 
 ## FAQ
