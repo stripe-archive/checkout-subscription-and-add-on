@@ -24,6 +24,7 @@ func main() {
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 
 	http.Handle("/", http.FileServer(http.Dir(os.Getenv("STATIC_DIR"))))
+	http.HandleFunc("/checkout-session", handleGetCheckoutSession)
 	http.HandleFunc("/create-checkout-session", handleCreateCheckoutSession)
 	http.HandleFunc("/public-key", handlePublicKey)
 	http.HandleFunc("/webhook", handleWebhook)
@@ -58,7 +59,7 @@ func handleCreateCheckoutSession(w http.ResponseWriter, r *http.Request) {
 				},
 			},
 		},
-		SuccessURL: stripe.String(os.Getenv("DOMAIN") + "/success.html"),
+		SuccessURL: stripe.String(os.Getenv("DOMAIN") + "/success.html?session_id={CHECKOUT_SESSION_ID}"),
 		CancelURL:  stripe.String(os.Getenv("DOMAIN") + "/cancel.html"),
 	}
 	if req.IsBuyingSticker {
@@ -94,6 +95,33 @@ func handlePublicKey(w http.ResponseWriter, r *http.Request) {
 		PublicKey string `json:"publicKey"`
 	}{
 		PublicKey: os.Getenv("STRIPE_PUBLISHABLE_KEY"),
+	})
+}
+
+func handleGetCheckoutSession(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+
+	keys, ok := r.URL.Query()["sessionId"]
+
+    if !ok || len(keys[0]) < 1 {
+        log.Println("CheckoutSession ID is missing from URL", r.URL.Query())
+        return
+    }
+
+	// Fetch the CheckoutSession object from your success page
+	// to get details about the order
+	session, _ := session.Get(
+		keys[0],
+		nil,
+	)
+
+	writeJSON(w, struct {
+		CheckoutSession *stripe.CheckoutSession `json:"checkoutSession"`
+	}{
+		CheckoutSession: session,
 	})
 }
 
