@@ -114,13 +114,10 @@ func handleCheckoutSession(w http.ResponseWriter, r *http.Request) {
 
 	// Fetch the CheckoutSession object from your success page
 	// to get details about the order
-	session, err := session.Get(
-		id,
-		nil,
-	)
+	session, err := session.Get(id, nil)
 
 	if err != nil {
-		log.Println("An error happened when getting the CheckoutSession from Stripe", id)
+		log.Println("An error happened when getting the CheckoutSession "+id+" from Stripe:", err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
