@@ -117,7 +117,7 @@ func handleCheckoutSession(w http.ResponseWriter, r *http.Request) {
 	session, err := session.Get(id, nil)
 
 	if err != nil {
-		log.Println("An error happened when getting the CheckoutSession "+id+" from Stripe:", err)
+		log.Printf("An error happened when getting the CheckoutSession %q from Stripe: %v", id, err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
