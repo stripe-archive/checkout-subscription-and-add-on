@@ -3,14 +3,9 @@
     "configureDotEnv": true,
     "integrations": [
       {
-        "name": "client-and-server",
+        "name": "main",
         "clients": ["web"],
         "servers": ["java", "node", "php-slim", "php", "python", "ruby", "go"]
-      },
-      {
-        "name": "client-only",
-        "clients": ["web"],
-        "servers": []
       }
     ]
   }
