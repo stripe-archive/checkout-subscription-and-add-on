@@ -10,10 +10,10 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/checkout/session"
-	"github.com/stripe/stripe-go/customer"
-	"github.com/stripe/stripe-go/webhook"
+	"github.com/stripe/stripe-go/v71"
+	"github.com/stripe/stripe-go/v71/checkout/session"
+	"github.com/stripe/stripe-go/v71/customer"
+	"github.com/stripe/stripe-go/v71/webhook"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir(os.Getenv("STATIC_DIR"))))
 	http.HandleFunc("/checkout-session", handleCheckoutSession)
 	http.HandleFunc("/create-checkout-session", handleCreateCheckoutSession)
-	http.HandleFunc("/public-key", handlePublicKey)
+	http.HandleFunc("/publishable-key", handlePublishableKey)
 	http.HandleFunc("/webhook", handleWebhook)
 
 	addr := "localhost:4242"
@@ -40,7 +40,7 @@ func handleCreateCheckoutSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req struct {
-		IsBuyingSticker bool `json:"isBuyingSticker"`
+		Donation int64 `json:"donation"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -48,29 +48,32 @@ func handleCreateCheckoutSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	lineItems := []*stripe.CheckoutSessionLineItemParams{
+		&stripe.CheckoutSessionLineItemParams{
+			Price:    stripe.String(os.Getenv("SUBSCRIPTION_PRICE_ID")),
+			Quantity: stripe.Int64(1),
+		},
+	}
+
+	if req.Donation > 0 {
+		lineItems = append(lineItems, &stripe.CheckoutSessionLineItemParams{
+			PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+				Product:    stripe.String(os.Getenv("DONATION_PRODUCT_ID")),
+				UnitAmount: stripe.Int64(req.Donation),
+				Currency:   stripe.String(string(stripe.CurrencyUSD)),
+			},
+			Quantity: stripe.Int64(1),
+		})
+	}
+
 	params := &stripe.CheckoutSessionParams{
+		Mode: stripe.String("subscription"),
 		PaymentMethodTypes: stripe.StringSlice([]string{
 			"card",
 		}),
-		SubscriptionData: &stripe.CheckoutSessionSubscriptionDataParams{
-			Items: []*stripe.CheckoutSessionSubscriptionDataItemsParams{
-				&stripe.CheckoutSessionSubscriptionDataItemsParams{
-					Plan: stripe.String(os.Getenv("SUBSCRIPTION_PLAN_ID")),
-				},
-			},
-		},
 		SuccessURL: stripe.String(os.Getenv("DOMAIN") + "/success.html?session_id={CHECKOUT_SESSION_ID}"),
 		CancelURL:  stripe.String(os.Getenv("DOMAIN") + "/cancel.html"),
-	}
-	if req.IsBuyingSticker {
-		params.LineItems = []*stripe.CheckoutSessionLineItemParams{
-			&stripe.CheckoutSessionLineItemParams{
-				Name:     stripe.String("Pasha e-book"),
-				Quantity: stripe.Int64(1),
-				Amount:   stripe.Int64(300),
-				Currency: stripe.String(string(stripe.CurrencyUSD)),
-			},
-		}
+		LineItems:  lineItems,
 	}
 
 	session, err := session.New(params)
@@ -86,15 +89,15 @@ func handleCreateCheckoutSession(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func handlePublicKey(w http.ResponseWriter, r *http.Request) {
+func handlePublishableKey(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
 	writeJSON(w, struct {
-		PublicKey string `json:"publicKey"`
+		PublishableKey string `json:"publishableKey"`
 	}{
-		PublicKey: os.Getenv("STRIPE_PUBLISHABLE_KEY"),
+		PublishableKey: os.Getenv("STRIPE_PUBLISHABLE_KEY"),
 	})
 }
 

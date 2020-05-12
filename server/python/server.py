@@ -29,9 +29,9 @@ def get_example():
     return render_template('index.html')
 
 
-@app.route('/public-key', methods=['GET'])
+@app.route('/publishable-key', methods=['GET'])
 def get_publishable_key():
-    return jsonify({'publicKey': os.getenv('STRIPE_PUBLISHABLE_KEY')})
+    return jsonify({'publishableKey': os.getenv('STRIPE_PUBLISHABLE_KEY')})
 
 # Fetch the Checkout Session to display the JSON result on the success page
 @app.route('/checkout-session', methods=['GET'])
@@ -45,35 +45,24 @@ def get_checkout_session():
 def create_checkout_session():
     data = json.loads(request.data)
     domain_url = os.getenv('DOMAIN')
-    plan_id = os.getenv('SUBSCRIPTION_PLAN_ID')
+    price_id = os.getenv('SUBSCRIPTION_PRICE_ID')
+    product_id = os.getenv('DONATION_PRODUCT_ID')
+    line_items = [{"price": price_id, "quantity": 1}]
 
     try:
-        if data['isBuyingSticker']:
-            # Customer is signing up for a subscription and purchasing the extra e-book
-            checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url +
-                "/success.html?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url=domain_url + "/cancel.html",
-                payment_method_types=["card"],
-                subscription_data={"items": [{"plan": plan_id}]},
-                line_items=[
-                    {
-                        "name": "Pasha e-book",
-                        "quantity": 1,
-                        "currency": "usd",
-                        "amount": 300
-                    }
-                ]
-            )
-        else:
-            # Customer is only signing up for a subscription
-            checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url +
-                "/success.html?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url=domain_url + "/cancel.html",
-                payment_method_types=["card"],
-                subscription_data={"items": [{"plan": plan_id}]},
-            )
+        if data['donation'] > 0:
+            line_items.append(
+                {"quantity": 1, "price_data": {"product": product_id, "unit_amount": data['donation'], "currency": "usd"}})
+        # Sign customer up for subscription
+        checkout_session = stripe.checkout.Session.create(
+            mode="subscription",
+            success_url=domain_url +
+            "/success.html?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=domain_url + "/cancel.html",
+            payment_method_types=["card"],
+            line_items=line_items
+        )
+
         return jsonify({'checkoutSessionId': checkout_session['id']})
     except Exception as e:
         return jsonify(error=str(e)), 403

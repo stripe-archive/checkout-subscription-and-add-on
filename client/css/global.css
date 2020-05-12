@@ -116,7 +116,7 @@ label {
 input[type="text"] {
   border: 1px solid var(--gray-border);
   border-radius: var(--radius);
-  padding: 5px 12px;
+  padding: 12px 24px;  
   height: 44px;
   width: 100%;
   transition: box-shadow 0.2s ease;
@@ -125,6 +125,7 @@ input[type="text"] {
   -webkit-appearance: none;
   appearance: none;
   color: #32325d;
+  font-size: 14px;
 }
 .sr-input:focus,
 input[type="text"]:focus,
@@ -139,7 +140,21 @@ button:focus,
 input[type="text"]::placeholder {
   color: var(--gray-light);
 }
-
+.donations {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.donation {
+  width: auto;
+  margin-right: 30px;
+  color: var(--gray-dark);
+  background-color: var(--gray-border);
+}
+.donation.selected {
+  background-color: var(--gray-dark);
+  color: white;
+}
 /* Checkbox */
 .sr-checkbox-label {
   position: relative;
@@ -147,7 +162,6 @@ input[type="text"]::placeholder {
 }
 
 .sr-checkbox-label input {
-  opacity: 0;
   margin-right: 6px;
 }
 
