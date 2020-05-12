@@ -1,8 +1,10 @@
 # Starting a subscription with Checkout
 
-There are several ways you can collect card details and use them to start a subscription on Stripe.
+There are several ways you can collect card details and use them to start a subscription on Stripe. 
 
 This sample uses Checkout, Stripe's prebuilt payment page to collect card details from a customer which then automatically subscribes them to a subscription plan using the [Billing APIs](https://stripe.com/docs/billing).
+
+It also enables you to dynamically create one-off charges to add to a subscription. In this demo we have three options to add a "donation" to the Checkout flow, but you could extend this integration to accept any donation amount.
 
 Checkout offers a subset of Billing functionality. If you require more control over the UI or subscription model you should check out the sample on [setting up subscription with Elements](https://github.com/stripe-samples/set-up-subscriptions). A comparison table of the two integrations:
 
@@ -73,15 +75,17 @@ The other environment variables are configurable:
 
 `STATIC_DIR` tells the server where to the client files are located and does not need to be modified unless you move the server files.
 
-`SUBSCRIPTION_PLAN_ID` requires a Plan ID for a subscription.
+`SUBSCRIPTION_PRICE_ID` requires a Price ID for a subscription.
+
+`DONATION_PRODUCT_ID` requires a Product ID to model a "Donation" product.
 
 `DOMAIN` is the domain of your website, where Checkout will redirect back to after the customer completes the payment on the Checkout page.
 
 **2. Create Products and Plans on Stripe**
 
-This sample requires a [Plan](https://stripe.com/docs/api/plans/object) ID to create the Checkout page. Products and Plans are objects on Stripe that lets you model a subscription.
+This sample requires a [Price](https://stripe.com/docs/api/plans/object) ID to create the Checkout page. Products and Prices are objects on Stripe that lets you model a subscription.
 
-You can create Products and Plans [in the dashboard](https://dashboard.stripe.com/products) or via [the API](https://stripe.com/docs/api/plans/create). Create a Plan before running this sample.
+You can create Products and Prices [in the dashboard](https://dashboard.stripe.com/products) or via [the API](https://stripe.com/docs/api/plans/create).
 
 
 **3. Follow the server instructions on how to run:**
@@ -121,6 +125,10 @@ A: We chose the most minimal framework to convey the key Stripe calls and concep
 Q: Can you show me how to build X?
 
 A: We are always looking for new recipe ideas, please email dev-samples@stripe.com with your suggestion!
+
+Q: What happened to Plans and SKUs?
+
+A: Plans and SKUs were old ways to model recurring and one-off prices. We created the Prices API to unify the two concepts and make it easier to reason about your pricing catalog. You can still pass old Plan and SKU IDs to Checkout -- to learn more read [our docs](https://stripe.com/docs/payments/checkout/migrating-prices) but know that you do not need to migrate any of your existing SKUs and Plans.
 
 ## Author(s)
 [@adreyfus-stripe](https://twitter.com/adrind)

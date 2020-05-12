@@ -10,11 +10,11 @@ app.use(
   express.json({
     // We need the raw body to verify webhook signatures.
     // Let's compute it only when hitting the Stripe webhook endpoint.
-    verify: function(req, res, buf) {
+    verify: function (req, res, buf) {
       if (req.originalUrl.startsWith("/webhook")) {
         req.rawBody = buf.toString();
       }
-    }
+    },
   })
 );
 
@@ -31,57 +31,46 @@ app.get("/checkout-session", async (req, res) => {
 });
 
 app.post("/create-checkout-session", async (req, res) => {
-  const planId = process.env.SUBSCRIPTION_PLAN_ID;
+  const priceId = process.env.SUBSCRIPTION_PRICE_ID;
+  const productId = process.env.DONATION_PRODUCT_ID;
   const domainURL = process.env.DOMAIN;
+  const { donation } = req.body;
 
-  let session;
-  const { isBuyingSticker } = req.body;
-  if (isBuyingSticker) {
-    // Customer is signing up for a subscription and purchasing the extra e-book
-    session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          name: "Pasha e-book",
-          quantity: 1,
-          currency: "usd",
-          amount: 300
-        }
-      ],
-      subscription_data: {
-        items: [
-          {
-            plan: planId
-          }
-        ]
+  const lineItems = [
+    {
+      price: priceId,
+      quantity: 1,
+    },
+  ];
+
+  if (donation) {
+    lineItems.push({
+      quantity: 1,
+      price_data: {
+        product: productId,
+        unit_amount: donation * 100,
+        currency: "usd"
       },
-      success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${domainURL}/cancel.html`
-    });
-  } else {
-    // Customer is only signing up for a subscription
-    session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      subscription_data: {
-        items: [
-          {
-            plan: planId
-          }
-        ]
-      },
-      success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${domainURL}/cancel.html`
     });
   }
 
+  // Sign customer up for subscription and add donation if provided
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    mode: "subscription",
+    line_items: lineItems,
+    success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${domainURL}/cancel.html`,
+  });
+
   res.send({
-    checkoutSessionId: session.id
+    checkoutSessionId: session.id,
   });
 });
 
-app.get("/public-key", (req, res) => {
+app.get("/publishable-key", (req, res) => {
   res.send({
-    publicKey: process.env.STRIPE_PUBLISHABLE_KEY
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
   });
 });
 

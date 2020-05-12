@@ -17,48 +17,38 @@ get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
 
-get '/public-key' do
+get '/publishable-key' do
   content_type 'application/json'
   {
-    publicKey: ENV['STRIPE_PUBLISHABLE_KEY']
+    publishableKey: ENV['STRIPE_PUBLISHABLE_KEY']
   }.to_json
 end
 
-def create_checkout_session(is_buying_sticker, plan_id, domain_url)
-  checkout_session = if is_buying_sticker
-                       # Customer is signing up for a subscription and purchasing the extra e-book
-                       Stripe::Checkout::Session.create(
-                         success_url: ENV['DOMAIN'] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-                         cancel_url: domain_url + '/cancel.html',
-                         payment_method_types: ['card'],
-                         subscription_data: {
-                           items: [{ plan: plan_id }]
-                         },
-                         line_items: [{
-                           name: 'Pasha e-book',
-                           quantity: 1,
-                           currency: 'usd',
-                           amount: 300
-                         }]
-                       )
-                     else
-                       # Customer is only signing up for a subscription
-                       Stripe::Checkout::Session.create(
-                         success_url: ENV['DOMAIN'] + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-                         cancel_url: domain_url + '/cancel.html',
-                         payment_method_types: ['card'],
-                         subscription_data: {
-                           items: [{ plan: plan_id }]
-                         }
-                       )
+def create_checkout_session(donation, price_id, product_id, domain_url)
+  line_items = [{
+    price: price_id,
+    quantity: 1
+  }]
+
+  if donation > 0
+    line_items.append({price_data: {product: product_id, unit_amount: donation, currency: 'usd'}, quantity: 1})
   end
+
+  checkout_session = Stripe::Checkout::Session.create(
+    mode: 'subscription',
+    success_url: domain_url + '/success.html?session_id={CHECKOUT_SESSION_ID}',
+    cancel_url: domain_url + '/cancel.html',
+    payment_method_types: ['card'],
+    line_items: line_items
+  )
+
   checkout_session
 end
 
 post '/create-checkout-session' do
   content_type 'application/json'
   data = JSON.parse request.body.read
-  checkout_session = create_checkout_session(data['isBuyingSticker'], ENV['SUBSCRIPTION_PLAN_ID'], ENV['DOMAIN'])
+  checkout_session = create_checkout_session(data['donation'], ENV['SUBSCRIPTION_PRICE_ID'], ENV['DONATION_PRODUCT_ID'], ENV['DOMAIN'])
 
   {
     checkoutSessionId: checkout_session['id']
