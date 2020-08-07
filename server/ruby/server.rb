@@ -39,6 +39,7 @@ def create_checkout_session(donation, price_id, product_id, domain_url)
     success_url: domain_url + '/success.html?session_id={CHECKOUT_SESSION_ID}',
     cancel_url: domain_url + '/cancel.html',
     payment_method_types: ['card'],
+    allow_promotion_codes: true,
     line_items: line_items
   )
 
