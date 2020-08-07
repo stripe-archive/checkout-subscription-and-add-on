@@ -21,6 +21,7 @@ $checkout_session = \Stripe\Checkout\Session::create([
 	'cancel_url' => $domain_url . '/cancel.html',
 	'payment_method_types' => ['card'],
 	'mode' => 'subscription',
+	'allow_promotion_codes' => true,
 	'line_items' => $line_items
 ]);
 
