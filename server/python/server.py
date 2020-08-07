@@ -60,6 +60,7 @@ def create_checkout_session():
             "/success.html?session_id={CHECKOUT_SESSION_ID}",
             cancel_url=domain_url + "/cancel.html",
             payment_method_types=["card"],
+            allow_promotion_codes=True,
             line_items=line_items
         )
 
