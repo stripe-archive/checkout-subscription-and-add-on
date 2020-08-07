@@ -11,6 +11,8 @@ github.com/stripe/stripe-go/v71 v71.9.0 h1:A9yH/zRZ+r08ahW0RO/a78oLVhf0X0tl2PJnV
 github.com/stripe/stripe-go/v71 v71.9.0/go.mod h1:BXYwMQe+xjYomcy5/qaTGyoyVMTP3wDCHa7DVFvg8+Y=
 github.com/stripe/stripe-go/v71 v71.10.0 h1:DGVMay6IrTfVegpC7wF+aSTSuiT3vpPle6kk9fcwV9M=
 github.com/stripe/stripe-go/v71 v71.10.0/go.mod h1:BXYwMQe+xjYomcy5/qaTGyoyVMTP3wDCHa7DVFvg8+Y=
+github.com/stripe/stripe-go/v71 v71.42.0 h1:fV1RocYkA/V9/eGfKjluuNSLQ+edQxbRvKOWLUhF6pg=
+github.com/stripe/stripe-go/v71 v71.42.0/go.mod h1:BXYwMQe+xjYomcy5/qaTGyoyVMTP3wDCHa7DVFvg8+Y=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20191119073136-fc4aabc6c914/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=

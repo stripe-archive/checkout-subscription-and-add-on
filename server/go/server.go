@@ -71,9 +71,10 @@ func handleCreateCheckoutSession(w http.ResponseWriter, r *http.Request) {
 		PaymentMethodTypes: stripe.StringSlice([]string{
 			"card",
 		}),
-		SuccessURL: stripe.String(os.Getenv("DOMAIN") + "/success.html?session_id={CHECKOUT_SESSION_ID}"),
-		CancelURL:  stripe.String(os.Getenv("DOMAIN") + "/cancel.html"),
-		LineItems:  lineItems,
+		SuccessURL:          stripe.String(os.Getenv("DOMAIN") + "/success.html?session_id={CHECKOUT_SESSION_ID}"),
+		CancelURL:           stripe.String(os.Getenv("DOMAIN") + "/cancel.html"),
+		LineItems:           lineItems,
+		AllowPromotionCodes: stripe.Bool(true),
 	}
 
 	session, err := session.New(params)
