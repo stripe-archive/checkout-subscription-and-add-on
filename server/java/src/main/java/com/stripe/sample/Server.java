@@ -82,6 +82,7 @@ public class Server {
 
             builder.setSuccessUrl(domainUrl + "/success.html?session_id={CHECKOUT_SESSION_ID}")
                     .setCancelUrl(domainUrl + "/cancel.html").setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+                    .setAllowPromotionCodes(true)
                     .addPaymentMethodType(PaymentMethodType.CARD);
             // Add a line item for the sticker the Customer is purchasing
             LineItem item = new LineItem.Builder().setQuantity(new Long(1)).putExtraParam("price", priceId).build();
