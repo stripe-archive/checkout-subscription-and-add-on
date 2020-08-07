@@ -61,6 +61,7 @@ app.post("/create-checkout-session", async (req, res) => {
     line_items: lineItems,
     success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${domainURL}/cancel.html`,
+    allow_promotion_codes: true,
   });
 
   res.send({
